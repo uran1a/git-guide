@@ -54,7 +54,7 @@ $ rm newFile.txt
 **rmdir** - удаление директории. 
 ```
 $ rmdir newDir 
-```
+```bush
 Чтобы выполнить несколько команд в одной строке, нужно записывать их через **&&**. 
 ```
 $ cd .. && touch newFile.txt && ls
@@ -120,6 +120,7 @@ cfe1e31 (HEAD -> master, origin/master) init: start project
 ```
 Файл **HEAD** - один из служебных файлов папки .git. Он указывает на коммит, который сделан последним (то есть на самый новый).
 Если нужно передать последний коммит, то вместо его хеша можно просто написать слово *HEAD* - Git поймет, что вы имели в виду последний коммит.
+
 ---
 
 ##GitHub
@@ -141,7 +142,7 @@ $ git remote -v
 ```
 **git push -u "название удаленного репозитория" "название ветки"** - связывание локальной ветки с одноименной удаленной веткой. 
 ```
-git push -u origin master
+$ git push -u origin master
 ```
 
 
@@ -158,3 +159,38 @@ Git хеширует (преобразует) информацию о комми
 - **staged** (подготовленный) - после выполнения команды *git add* файл попадает в *staging area*, то есть в список файлов, который войдет в коммит. В этот момент файл находятся в состоянии *staged*. 
 - **tracked** (отслеживаемый) - в него попадают файлы, которые были зафиксированы с помощью *git commit*, а также файлы, которые были добавлены в *staging area* командой *git add*. То есть все файлы, в которых Git так или иначе отслеживает изменения.
 - **modified** (измененный) - Git сравнил содержимое файла с последней сохранненой версией и нашел отличия. Например, файл был закоммичен и после был изменен.
+
+##Conventional Commits
+
+Conventional Commits - это простое соглашение о том, как нужно писать сообщения commit`ов. 
+Сообщения commit`ов должны быть следующей структуры:
+```
+<type>[optional scope]: <descroption>
+```
+
+Commit’ы могут содержать следующие структурные элементы:
+- fix: при исправляет ошибку в вашем коде. 
+    ```
+    init: start project
+    init: start task
+    ```
+- feat: при добавляет новую функцию в ваш коде. 
+    ```
+    feat: add basic page layout
+    feat: implement search box
+    ```
+- init: при начале проекта или задания. 
+    ```
+    fix: implement correct loading data from db
+    fix: correct minor typos in code
+    ```
+- refactor: при улучшение кода, без изменения функциональности. 
+    ```
+    refactor: change structire of the project
+    refactor: rename vars for better readabiliry
+    ```
+- docs: используется при работе с документацией/readme проекта 
+    ```
+    docs: update readme with additional information
+    docs: update description of run() method
+    ```
