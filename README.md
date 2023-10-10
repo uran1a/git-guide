@@ -243,3 +243,8 @@ $ git diff
 **git diff --staged** - покажет изменения в `staged`-файлах относительно последних закоммиченных версий. 
 ```
 $ git diff --staged
+```
+**git diff \<hash A> \<hash B>** - сравнение коммитов A и B. 
+```
+$ git diff 5657b5c HEAD
+```
