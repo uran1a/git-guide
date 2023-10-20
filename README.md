@@ -354,3 +354,62 @@ $ git push -u origin my-branch # отправили ветку my-branch в уд
 ```
 
 :warning: Обратите внимание: в процессе выполнения задания может открыться редактор кода Vim. Для выхода нажмите Esc, введите сочетание :qa! и нажмите Enter.
+
+## Fast-forward 
+
+Две ветки находятся в состоянии **fast-forward**, если одну из них можно "перемотать" вперёд и она будет содердать те же коммиты, что и другая. Это утверждение можно сформулировать иначе:
+- при слиянии этих двух веток никак не возможен конфликт;
+- истории эти двух веток не "разошлись";
+- одна ветка является продолжением другой.  
+
+![fast-forward state](resources/images/fast-forward.png)
+
+Например, имеет такой репозиторий с двумя ветками (`master`, `feature/add-new-branch`).
+```
+$ git log --graph --oneline
+* 24d8dee (HEAD -> feature/add-new-branch) feat: fiveth commit
+* 9ecb54d feat: fourth commit
+* 329cc08 (master) feat: third commit
+* 7e0242a feat: second commit
+* d877668 feat: first commit
+```
+Они находятся в состоянии **fast-forward**, так как истоия эти веток не "разошлись". Для того, чтобы слить ветки в состоянии **fast-forward** необходимо прописать следущие комманды:
+```
+$ git checkout master # сменить ветку, в которую хотите слить изменения
+$ git merge feature/add-new-branch # указать ветку, с которой сливаются изменения 
+Updating 329cc08..24d8dee
+Fast-forward
+ README.md | 2 ++
+ 1 file changed, 2 insertions(+)
+```
+Результат
+```
+$ git log --oneline
+24d8dee (HEAD -> master, feature/add-new-branch) feat: fiveth commit
+9ecb54d feat: fourth commit
+329cc08 feat: third commit
+7e0242a feat: second commit
+d877668 feat: first commit
+```
+Обратите внимание:
+- Ветки сливались в состоянии **fast-forward**
+- В истории коммитов `HEAD` указывает и на `master` и на `feature/add-new-branch`, т.к в них сейчас одинаковые коммиты.
+
+`git merge --no-ff <branch-name>` - отключает сливание веток с помощью fast-forward, поэтому при сливании веток будет создаться *коммит сливания* (merge commit).
+![not fast-forward state](resources/images/not-fast-forward.png)
+```
+$ git merge --no-edit --no-ff feature/add-new-branch
+Merge made by the 'ort' strategy.
+ docs.txt | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 docs.txt
+$ git log --graph --oneline
+*   6814789 (HEAD -> master) Merge branch 'feature/add-new-branch'
+|\
+| * 24d8dee (feature/add-new-branch) feat: fiveth commit
+| * 9ecb54d feat: fourth commit
+|/
+* 329cc08 feat: third commit
+* 7e0242a feat: second commit
+* d877668 feat: first commit
+```
