@@ -4,9 +4,17 @@
 **Git** - незаменимый в команде инструмент, ведь он помогает объединять результаты нескольких человек. 
 **Командная строка** (**C**ommand **L**ine **I**nterface, **CLI**) - тоже интерфейс, только текстовый.
 
+[Команды для работы с консолью](#console-commands)
+
+[Git команды](#git-commands)
+
+[Git команды](#git-commands)
+
+[Слить изменения с удаленной ветки](#merge-branches)
+
 ---
 
-## Команды для работы с консолью
+## Console commands
 
 **pwd** ( **p**rint **w**orking **d**irectory) - путь к текущей директории. 
 ```
@@ -62,7 +70,7 @@ $ cd .. && touch newFile.txt && ls
 
 ---
 
-## Git команды
+## Git commands
 
 **git version** - получение текущей версии git. 
 ```
@@ -131,6 +139,8 @@ cfe1e31 (HEAD -> master, origin/master) init: start project
 **SSH-ключ** - ваш виртуальный модификатор в GitHub. SSH-ключ состоит из двух частей - публичный и приватный. публичный ключ зашифровывает данные, а приватный - расшифровывает. 
 
 ---
+
+# Remote
 
 **git remote add "название удаленного репозитория" "SSH или URL"** - привязка удаленного репозитория к локальному 
 ```
@@ -270,6 +280,16 @@ $ git diff 5657b5c HEAD
 `git clone <HTTPS | SSH key>` - копирование проекта в локальный репозиторий. Команда автоматически связывает локальный репозиторий с удаленным. 
 ```
 $ git clone git@github.com:yandex-praktikum/git-clone-practice.git
+```
+
+`git clone -b <branch> <remote_repo>` - клонирует одну ветку.
+```
+$ git clone -b my-branch git@github.com:user/myproject.git
+```
+
+`git clone <HTTPS | SSH key> .` - не создает общую папку.
+```
+$ git clone git@github.com:yandex-praktikum/git-clone-practice.git .
 ```
 
 **Fork** - это GitHub-операция; напрямую с Git она не связан. Fork позволяет получить точную копию GitHub-репозитория в ваш аккаунт. Копия, которая получина с помощью "форк", полностью независима от оригинального проекта - изменения *не будет синхронизированы*.
@@ -455,3 +475,140 @@ Automatic merge failed; fix conflicts and then commit the result.
 - Выполнить `git merge master` и разрешить конфликт локально. В результате будет создан локальный коммит слияния.
 
 ![correct merge](resources/images/correct-merge.png)
+
+## <a id="merge-branches"></a>Слить изменения с удаленной ветки
+
+### При помощи "merge"
+
+1. Получите обновления из удаленного репозитория:
+
+```bash
+git fetch origin
+```
+2. Проверьте список удаленных веток:
+
+```bash
+git branch -r
+```
+
+3. Вы должны увидеть что-то вроде этого:
+
+```bash
+origin/main
+origin/feature-branch
+```
+
+4. Переключитесь на локальную ветку main:
+
+```bash
+git checkout main
+```
+
+5. Слейте изменения из удаленной ветки feature-branch:
+
+```bash
+git merge origin/feature-branch
+```
+### Разрешение конфликтов
+1. Если возникают конфликты, Git уведомит вас об этом:
+
+```bash
+Auto-merging somefile.txt
+CONFLICT (content): Merge conflict in somefile.txt
+Automatic merge failed; fix conflicts and then commit the result.
+```
+
+2. Просмотрите конфликты:
+
+Откройте файлы с конфликтами в вашем текстовом редакторе или IDE. 
+Конфликты будут отмечены следующим образом:
+
+```text
+<<<<<<< HEAD
+ваше изменение
+=======
+изменение из feature-branch
+>>>>>>> origin/feature-branch
+```
+
+3. Разрешите конфликты вручную:
+
+Измените файл, оставив только нужные изменения, 
+и удалите маркеры конфликтов (<<<<<<<, =======, >>>>>>>).
+
+4. Добавьте измененные файлы:
+
+```bash
+git add somefile.txt
+```
+
+5. Завершите слияние:
+
+```text
+git commit -m 'feat: resolved conflicts'
+```
+
+### При помощи "rebase" 
+
+Получите обновления из удаленного репозитория:
+
+```bash
+git fetch origin
+```
+
+Переключитесь на локальную ветку main:
+
+```bash
+git checkout main
+```
+
+Выполните rebase с удаленной ветки feature-branch:
+
+```bash
+git rebase origin/feature-branch
+```
+### Разрешение конфликтов
+
+1. Если возникают конфликты, Git уведомит вас об этом:
+
+```bash
+CONFLICT (content): Merge conflict in somefile.txt
+```
+
+2. Просмотрите конфликты:
+
+Откройте файлы с конфликтами в вашем текстовом редакторе или IDE. 
+Конфликты будут отмечены следующим образом:
+
+```text
+<<<<<<< HEAD
+ваше изменение
+=======
+изменение из feature-branch
+>>>>>>> origin/feature-branch
+```
+
+3. Разрешите конфликты вручную:
+
+Измените файл, оставив только нужные изменения, 
+и удалите маркеры конфликтов (<<<<<<<, =======, >>>>>>>).
+
+4. Добавьте измененные файлы:
+
+```bash 
+git add somefile.txt
+```
+
+5. Продолжите rebase:
+
+```bash
+git rebase --continue
+```
+
+Если снова возникают конфликты, повторите шаги 1-5. Если нет, `rebase` завершится успешно.
+
+
+### Вывод
+Используйте `merge`, если вы хотите сохранить историю коммитов обеих веток, или `rebase`, 
+если вы хотите применить изменения из удаленной ветки на текущую ветку, как будто они были сделаны в вашей текущей ветке.
+
